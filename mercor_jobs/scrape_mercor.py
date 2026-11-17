@@ -12,7 +12,7 @@ FIRST = ['url', 'title', 'companyName', 'listingDomain', 'commitment', 'workArra
          'payRateFrequency', 'rateMin', 'rateMax', 'hoursPerWeek', 'referralAmount', 'remainingSlots',
          'postedAt', 'createdAt', 'status', 'listingType', 'offersEquity', 'eligibleLocation',
          'eligibleResidenceLocation', 'ineligibleLocation', 'ineligibleResidenceLocation', 'employmentType', 'validThrough',
-         'companyWebsite', 'companyDescription', 'fullPostingText', 'pageFooterText', 'description']
+         'companyWebsite', 'companyDescription', 'fullPostingText', 'pageFooterText', 'referralText', 'description']
 
 
 def cell(x):
@@ -21,6 +21,7 @@ def cell(x):
     return '' if x is None else x
 
 
+REFERRAL_POLICY = 'https://talent.docs.mercor.com/policies/referrals'
 UA = {"User-Agent": "Mozilla/5.0"}
 PAGE_EXTRA = ['companyWebsite', 'companyDescription', 'availableSpots', 'activeContractorsCount',
               'latestHeadcountGoalDeadline', 'sumMinHeadcountGoals', 'isConsumerData']
@@ -65,14 +66,30 @@ def page_details(job):
     ends = [i for i in (text.find(m, max(start, 0)) for m in ('Share the referral link',
             'Activate my referral link', 'One interview, real results')) if i != -1]
     end = min(ends) if ends else -1
+    # Referral box: "Earn up to $X by referring" + its explanation, ending before the activate button.
+    ref = None
+    rm = re.compile(r'Earn (up to \$|rewards by referring)').search(text, max(start, 0))
+    r0 = rm.start() if rm else -1
+    r1 = text.find('Activate my referral link', max(r0, 0))
+    if r0 != -1 and r1 > r0:
+        lines = []
+        for l in text[r0:r1].splitlines():
+            l = l.strip()
+            if l and l not in lines:  # the page repeats the "Referral limits apply" sentence
+                lines.append(l)
+        lines = [l for l in lines if not any(l != o and l in o for o in lines)]
+        ref = '\n'.join(lines).replace('See the Referral Policy',
+                                       'See the Referral Policy (' + REFERRAL_POLICY + ')')
+    out['referralText'] = ref
     if start != -1 and end > start:
         tail = text[start:end]
-        tail = re.sub(r'\s*Earn up to \$[\d,]+ by referring\s*$', '', tail).strip()
+        tail = re.sub(r'\s*Earn (up to \$[\d,]+|rewards) by referring\s*$', '', tail).strip()
         out['pageFooterText'] = tail
-        out['fullPostingText'] = job['description'].strip() + '\n\n' + tail
+        full = job['description'].strip() + '\n\n' + tail
     else:
         out['pageFooterText'] = None
-        out['fullPostingText'] = job['description'].strip()
+        full = job['description'].strip()
+    out['fullPostingText'] = full + ('\n\n' + ref if ref else '')
     return out
 
 
