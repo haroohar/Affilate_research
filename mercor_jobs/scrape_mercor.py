@@ -8,7 +8,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 API = "https://aws.api.mercor.com/work/listings-explore-page"
 OUT = os.path.dirname(os.path.abspath(__file__))
-FIRST = ['url', 'title', 'companyName', 'listingDomain', 'commitment', 'workArrangement', 'location',
+FIRST = ['url', 'title', 'opportunityType', 'companyName', 'listingDomain', 'commitment', 'workArrangement', 'location',
          'payRateFrequency', 'rateMin', 'rateMax', 'hoursPerWeek', 'referralAmount', 'remainingSlots',
          'postedAt', 'createdAt', 'status', 'listingType', 'offersEquity', 'eligibleLocation',
          'eligibleResidenceLocation', 'ineligibleLocation', 'ineligibleResidenceLocation', 'employmentType', 'validThrough',
@@ -93,20 +93,23 @@ def page_details(job):
     return out
 
 
-def main():
-    req = urllib.request.Request(API, headers={**UA, "Origin": "https://work.mercor.com"})
-    jobs = json.load(urllib.request.urlopen(req, timeout=60))['listings']
-    for j in jobs:
-        j['url'] = f"https://work.mercor.com/jobs/{j['listingId']}"
-    with ThreadPoolExecutor(8) as ex:
-        for j, extra in zip(jobs, ex.map(page_details, jobs)):
-            j.update(extra)
-    jobs.sort(key=lambda j: j.get('postedAt') or '', reverse=True)
-    keys = FIRST + sorted({k for j in jobs for k in j} - set(FIRST))
+POOL_WORDING = re.compile(r'talent network|talent pool|network of .{0,60}for potential future projects', re.I)
 
-    with open(os.path.join(OUT, 'mercor_jobs.json'), 'w', encoding='utf-8') as f:
+
+def opportunity_type(job):
+    """'current project' vs 'talent pool (future projects)'.
+    Evergreen listings are always-open pools; a few standard listings also say they are pools."""
+    if job.get('listingType') == 'evergreen' or POOL_WORDING.search(job.get('title') or '') \
+            or re.search(r'building a network of .{0,80}for potential future projects', job.get('description') or '', re.I):
+        return 'talent pool (future projects)'
+    return 'current project'
+
+
+def write_outputs(jobs, name):
+    keys = FIRST + sorted({k for j in jobs for k in j} - set(FIRST))
+    with open(os.path.join(OUT, name + '.json'), 'w', encoding='utf-8') as f:
         json.dump(jobs, f, indent=2, ensure_ascii=False)
-    with open(os.path.join(OUT, 'mercor_jobs.csv'), 'w', newline='', encoding='utf-8') as f:
+    with open(os.path.join(OUT, name + '.csv'), 'w', newline='', encoding='utf-8') as f:
         w = csv.writer(f)
         w.writerow(keys)
         for j in jobs:
@@ -121,10 +124,30 @@ def main():
             ws.append([(c[:32000] if isinstance(c, str) else c) for c in (cell(j.get(k)) for k in keys)])
         ws.freeze_panes = 'B2'
         ws.auto_filter.ref = ws.dimensions
-        wb.save(os.path.join(OUT, 'mercor_jobs.xlsx'))
+        wb.save(os.path.join(OUT, name + '.xlsx'))
     except ImportError:
         pass
-    print(f"Saved {len(jobs)} jobs to {OUT}")
+
+
+def main():
+    req = urllib.request.Request(API, headers={**UA, "Origin": "https://work.mercor.com"})
+    jobs = json.load(urllib.request.urlopen(req, timeout=60))['listings']
+    for j in jobs:
+        j['url'] = f"https://work.mercor.com/jobs/{j['listingId']}"
+    with ThreadPoolExecutor(8) as ex:
+        for j, extra in zip(jobs, ex.map(page_details, jobs)):
+            j.update(extra)
+    finish(jobs)
+
+
+def finish(jobs):
+    for j in jobs:
+        j['opportunityType'] = opportunity_type(j)
+    jobs.sort(key=lambda j: j.get('postedAt') or '', reverse=True)
+    write_outputs(jobs, 'mercor_jobs')
+    current = [j for j in jobs if j['opportunityType'] == 'current project']
+    write_outputs(current, 'mercor_jobs_current')
+    print(f"Saved {len(jobs)} jobs ({len(current)} current projects) to {OUT}")
 
 
 if __name__ == '__main__':
