@@ -1,0 +1,134 @@
+<title>Mercor Tech &amp; ML Roles</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap">
+<style>
+/* Layout: left index of roles grouped by discipline, reading column of full postings on the right; stacks on phones. */
+:root {
+  --bg: #f6f7f9; --surface: #ffffff; --fg: #1b2230; --muted: #5d6779; --line: #dfe3ea;
+  --accent: #2257d6; --accent-soft: #e6edfc; --chip: #eef0f4;
+  --display: "Space Grotesk", "IBM Plex Sans", system-ui, sans-serif;
+  --body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #11151c; --surface: #181d26; --fg: #e6e9ef; --muted: #98a2b3; --line: #2a313d;
+  --accent: #7aa2ff; --accent-soft: #1e2a45; --chip: #222937; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #11151c; --surface: #181d26; --fg: #e6e9ef; --muted: #98a2b3; --line: #2a313d;
+  --accent: #7aa2ff; --accent-soft: #1e2a45; --chip: #222937; color-scheme: dark }
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 15px; line-height: 1.55 }
+.wrap { max-width: 1240px; margin: 0 auto; padding-block: 28px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)) }
+header h1 { font-family: var(--display); font-weight: 600; font-size: 1.9rem; margin: 0 0 6px; text-wrap: balance }
+header p { margin: 0; color: var(--muted); max-width: 70ch }
+.controls { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 24px; align-items: center }
+.controls input { flex: 1 1 240px; min-width: 0; font: inherit; padding: 8px 12px; border: 1px solid var(--line);
+  border-radius: 6px; background: var(--surface); color: var(--fg) }
+.chip { font: 500 13px var(--body); border: 1px solid var(--line); background: var(--surface); color: var(--fg);
+  padding: 6px 12px; border-radius: 999px; cursor: pointer }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--surface) }
+.chip:focus-visible, .controls input:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+.grid { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 28px; align-items: start }
+nav { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px); max-height: calc(100vh - 32px); overflow: auto;
+  font-size: 13.5px; border-right: 1px solid var(--line); padding-right: 16px }
+nav h3 { font: 600 11px var(--body); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 16px 0 6px }
+nav h3:first-child { margin-top: 0 }
+nav a { display: block; color: var(--fg); text-decoration: none; padding: 3px 0 }
+nav a:hover { color: var(--accent) }
+nav a span { color: var(--muted); font-family: var(--mono); font-size: 12px; margin-left: 4px }
+main { display: flex; flex-direction: column; gap: 14px; min-width: 0 }
+.grouphead { font: 600 1.15rem var(--display); margin: 14px 0 0 }
+article { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; min-width: 0 }
+summary { list-style: none; cursor: pointer; padding: 16px 20px; display: flex; flex-direction: column; gap: 8px }
+summary::-webkit-details-marker { display: none }
+.titlerow { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: baseline }
+.titlerow h2 { font: 600 1.05rem var(--display); margin: 0; min-width: 0 }
+.pay { font-family: var(--mono); font-weight: 500; color: var(--accent); white-space: nowrap; font-variant-numeric: tabular-nums }
+.meta { display: flex; flex-wrap: wrap; gap: 6px; font-size: 12.5px; color: var(--muted) }
+.meta span { background: var(--chip); padding: 2px 8px; border-radius: 4px }
+.toggle { font-size: 12.5px; color: var(--accent) }
+details[open] .toggle .o { display: none } details:not([open]) .toggle .c { display: none }
+.body { padding: 4px 20px 20px; border-top: 1px solid var(--line); max-width: 80ch; overflow-wrap: anywhere }
+.body h1, .body h2, .body h3, .body h4 { font-family: var(--display); font-size: 1rem; margin: 18px 0 6px }
+.body p { margin: 8px 0 } .body ul, .body ol { padding-left: 22px; margin: 6px 0 } .body li { margin: 3px 0 }
+.body li p { margin: 0 } .body a { color: var(--accent) }
+.body table { border-collapse: collapse; display: block; overflow-x: auto; font-size: 13px }
+.body td, .body th { border: 1px solid var(--line); padding: 4px 8px; text-align: left }
+.body code { font-family: var(--mono); font-size: 13px; background: var(--chip); padding: 1px 4px; border-radius: 3px }
+.applylink { display: inline-block; margin-top: 14px; font-weight: 500; color: var(--accent) }
+.empty { color: var(--muted); padding: 24px 0 }
+@media (max-width: 820px) { .grid { grid-template-columns: minmax(0, 1fr) } nav { display: none } }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important } }
+html { scroll-behavior: smooth }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Mercor tech &amp; ML roles</h1>
+    <p>__COUNT__ current-project listings from work.mercor.com/explore that call for software, ML, infrastructure or security expertise. Talent-pool listings are excluded. Scraped 17 Nov 2026; each card holds the complete posting text as shown on the job page.</p>
+  </header>
+  <div class="controls">
+    <input id="q" type="search" placeholder="Search titles and posting text (e.g. CUDA, Rust, Kubernetes)" aria-label="Search postings">
+    <div id="chips" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+    <button class="chip" id="expand" type="button">Collapse all</button>
+  </div>
+  <div class="grid">
+    <nav id="nav" aria-label="Roles"></nav>
+    <main id="list"></main>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+<script>
+const JOBS = __DATA__;
+const groups = [...new Set(JOBS.map(j => j.group))];
+let active = 'All', query = '', allOpen = true;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const slug = (j, i) => 'job-' + i;
+const render = md => {
+  // Site-added footer lines are plain text; give its section labels heading weight.
+  md = md.replace(/^(Contract and Payment Terms|About Mercor)$/gm, '\n### $1\n');
+  md = md.replace(/^(Earn (up to \$[\d,]+|rewards) by referring)$/gm, '\n### $1\n');
+  const html = window.marked ? marked.parse(md, { breaks: true }) : '<pre style="white-space:pre-wrap">' + esc(md) + '</pre>';
+  return window.DOMPurify ? DOMPurify.sanitize(html) : html;
+};
+function chips() {
+  const el = document.getElementById('chips');
+  el.innerHTML = ['All', ...groups].map(g => {
+    const n = g === 'All' ? JOBS.length : JOBS.filter(j => j.group === g).length;
+    return `<button class="chip" type="button" aria-pressed="${g === active}" data-g="${esc(g)}">${esc(g)} · ${n}</button>`;
+  }).join('');
+  el.querySelectorAll('button').forEach(b => b.onclick = () => { active = b.dataset.g; chips(); draw(); });
+}
+function draw() {
+  const q = query.toLowerCase();
+  const shown = JOBS.map((j, i) => ({ j, i })).filter(({ j }) =>
+    (active === 'All' || j.group === active) && (!q || (j.title + ' ' + j.text).toLowerCase().includes(q)));
+  const list = document.getElementById('list'), nav = document.getElementById('nav');
+  if (!shown.length) { list.innerHTML = '<p class="empty">No postings match. Clear the search or pick another group.</p>'; nav.innerHTML = ''; return; }
+  let html = '', navh = '', last = null;
+  for (const { j, i } of shown) {
+    if (j.group !== last) { html += `<h2 class="grouphead">${esc(j.group)}</h2>`; navh += `<h3>${esc(j.group)}</h3>`; last = j.group; }
+    const meta = [j.commitment, j.location, j.hours ? j.hours + ' hrs/wk' : null,
+      j.slots != null ? j.slots + ' openings left' : null, 'Posted ' + j.posted].filter(Boolean);
+    html += `<article id="${slug(j, i)}"><details${allOpen ? ' open' : ''}><summary>
+      <div class="titlerow"><h2>${esc(j.title)}</h2><span class="pay">${esc(j.pay)}</span></div>
+      <div class="meta">${meta.map(m => `<span>${esc(m)}</span>`).join('')}</div>
+      <span class="toggle"><span class="o">Show full posting</span><span class="c">Hide posting</span></span>
+      </summary><div class="body" data-i="${i}"></div></details></article>`;
+    navh += `<a href="#${slug(j, i)}">${esc(j.title)}<span>${esc(j.pay)}</span></a>`;
+  }
+  list.innerHTML = html; nav.innerHTML = navh;
+  list.querySelectorAll('details').forEach(d => {
+    const fill = () => { const b = d.querySelector('.body'); if (!b.dataset.done) { const j = JOBS[+b.dataset.i];
+      b.innerHTML = render(j.text) + `<a class="applylink" href="${esc(j.url)}" target="_blank" rel="noopener">Open on Mercor ↗</a>`; b.dataset.done = 1; } };
+    if (d.open) fill(); d.addEventListener('toggle', () => d.open && fill());
+  });
+  nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => { const d = document.querySelector(a.getAttribute('href') + ' details'); if (d) d.open = true; }));
+}
+document.getElementById('q').addEventListener('input', e => { query = e.target.value.trim(); draw(); });
+document.getElementById('expand').onclick = e => { allOpen = !allOpen; e.target.textContent = allOpen ? 'Collapse all' : 'Expand all'; draw(); };
+chips(); draw();
+</script>
