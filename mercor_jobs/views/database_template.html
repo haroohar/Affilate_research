@@ -1,0 +1,316 @@
+<title>Mercor Referral Ledger</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap">
+<style>
+/* Layout: a ledger. Summary strip, sticky filter bar, then one row per listing that opens into the full posting. */
+:root {
+  --bg: #f5f6f3;
+  --panel: #ffffff;
+  --ink: #18211d;
+  --muted: #5c6862;
+  --line: #dde2dc;
+  --accent: #0d6b4f;
+  --accent-soft: #e3f1ea;
+  --gold: #8a5a00;
+  --gold-soft: #f8edd5;
+  --pool: #5b4a8f;
+  --pool-soft: #ece8f6;
+  --warn: #9a3412;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111613; --panel: #182019; --ink: #e6ece8; --muted: #9aa8a0; --line: #2a352e;
+    --accent: #5fcf9f; --accent-soft: #1b3328; --gold: #e8b55a; --gold-soft: #3a2e14;
+    --pool: #b6a6ee; --pool-soft: #2b2540; --warn: #f19a6b; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111613; --panel: #182019; --ink: #e6ece8; --muted: #9aa8a0; --line: #2a352e;
+  --accent: #5fcf9f; --accent-soft: #1b3328; --gold: #e8b55a; --gold-soft: #3a2e14;
+  --pool: #b6a6ee; --pool-soft: #2b2540; --warn: #f19a6b; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 14px; line-height: 1.5; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.wrap { max-width: 1180px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 28px 64px; }
+h1 { font-family: var(--f-display); font-size: clamp(26px, 4vw, 36px); line-height: 1.1; margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
+.lede { color: var(--muted); max-width: 68ch; margin: 8px 0 0; }
+.num { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; margin: 22px 0 18px; }
+.stat { background: var(--panel); padding: 12px 14px; }
+.stat b { display: block; font-family: var(--f-mono); font-size: 22px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.stat span { color: var(--muted); font-size: 12px; }
+
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); padding-block: 10px; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 8px; }
+.presets, .controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.chip { font: 500 13px var(--f-body); border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 999px; padding: 5px 12px; cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--panel); }
+.chip:focus-visible, select:focus-visible, input:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.controls input[type=search] { flex: 1 1 220px; min-width: 0; }
+.controls select, .controls input { font: 13px var(--f-body); color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 7px; padding: 6px 8px; }
+.controls label { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 13px; }
+.controls input[type=number] { width: 76px; }
+.meta { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; color: var(--muted); font-size: 13px; padding-top: 12px; }
+.linkbtn { font: 500 13px var(--f-body); background: none; border: 0; color: var(--accent); cursor: pointer; padding: 0; text-decoration: underline; text-underline-offset: 2px; }
+
+.head, .row > summary { display: grid; grid-template-columns: 26px minmax(0, 3.2fr) minmax(0, 1.5fr) minmax(0, 1.3fr) minmax(0, 1.2fr) minmax(0, 1.2fr); gap: 12px; align-items: center; padding: 10px 12px; }
+.head { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid var(--line); margin-top: 8px; }
+.head button { font: inherit; letter-spacing: inherit; text-transform: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; text-align: left; }
+.head button[data-active] { color: var(--ink); }
+.list { display: flex; flex-direction: column; }
+.row { border-bottom: 1px solid var(--line); background: var(--panel); }
+.row > summary { list-style: none; cursor: pointer; }
+.row > summary::-webkit-details-marker { display: none; }
+.row[open] > summary { background: var(--accent-soft); }
+.t { font-weight: 600; overflow-wrap: anywhere; }
+.sub { color: var(--muted); font-size: 12px; display: flex; flex-wrap: wrap; gap: 4px 10px; margin-top: 2px; }
+.pill { display: inline-block; font-size: 11px; font-weight: 500; border-radius: 4px; padding: 1px 6px; }
+.pill.cur { background: var(--accent-soft); color: var(--accent); }
+.pill.pool { background: var(--pool-soft); color: var(--pool); }
+.pill.load-Light { background: var(--accent-soft); color: var(--accent); }
+.pill.load-Flexible { background: var(--gold-soft); color: var(--gold); }
+.pill.load-Part-time, .pill.load-Full-time { background: var(--bg); color: var(--muted); border: 1px solid var(--line); }
+.ref { font-family: var(--f-mono); font-variant-numeric: tabular-nums; font-weight: 500; color: var(--gold); }
+.ref small { display: block; font-family: var(--f-body); font-weight: 400; color: var(--muted); font-size: 11px; }
+.geo-us { color: var(--warn); }
+.star { background: none; border: 0; cursor: pointer; font-size: 17px; line-height: 1; color: var(--line); padding: 0; }
+.star[aria-pressed="true"] { color: var(--gold); }
+.cell-l { display: none; }
+
+.detail { padding: 4px 16px 18px 50px; display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 22px; }
+.post { max-width: 72ch; font-size: 13.5px; }
+.post p { margin: 0 0 8px; }
+.post ul { margin: 0 0 8px; padding-left: 20px; }
+.post h4 { font-family: var(--f-display); font-size: 15px; margin: 14px 0 6px; }
+.facts { display: flex; flex-direction: column; gap: 8px; font-size: 13px; align-self: start; border: 1px solid var(--line); border-radius: 8px; padding: 12px; }
+.facts div { display: flex; justify-content: space-between; gap: 10px; }
+.facts dt { color: var(--muted); }
+.facts dd { margin: 0; text-align: right; overflow-wrap: anywhere; }
+.open { display: inline-block; background: var(--accent); color: var(--panel); text-decoration: none; font-weight: 600; border-radius: 7px; padding: 8px 12px; text-align: center; margin-top: 4px; }
+.empty { padding: 40px 12px; text-align: center; color: var(--muted); }
+.note { color: var(--muted); font-size: 12px; margin-top: 20px; max-width: 80ch; }
+
+@media (max-width: 760px) {
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .head { display: none; }
+  .row > summary { grid-template-columns: 26px minmax(0, 1fr) minmax(0, 1fr); row-gap: 6px; }
+  .row > summary > .c-title { grid-column: 2 / 4; }
+  .row > summary > .c-x { grid-column: auto; }
+  .row > summary > .c-x:nth-of-type(odd) { grid-column: 2; }
+  .cell-l { display: block; color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .detail { grid-template-columns: minmax(0, 1fr); padding: 4px 12px 16px; }
+}
+@media (prefers-reduced-motion: no-preference) { .row > summary { transition: background-color 0.15s; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Mercor Referral Ledger</h1>
+    <p class="lede">Every open Mercor listing, ranked by what a referral can earn you, starting with roles that ask for little time. Open a row for the full posting, then open it on Mercor while logged in to copy your referral link from the listing.</p>
+  </header>
+
+  <section class="stats" aria-label="Summary">
+    <div class="stat"><b id="s-total">0</b><span>listings open</span></div>
+    <div class="stat"><b id="s-cur">0</b><span>current projects</span></div>
+    <div class="stat"><b id="s-hi">0</b><span>pay $1,000+ per referral</span></div>
+    <div class="stat"><b id="s-low">0</b><span>low commitment</span></div>
+  </section>
+
+  <div class="bar">
+    <div class="presets" role="group" aria-label="Focus">
+      <button class="chip" type="button" data-focus="all" aria-pressed="true">All listings</button>
+      <button class="chip" type="button" data-focus="finance" aria-pressed="false">Finance &amp; accounting</button>
+      <button class="chip" type="button" data-focus="tech" aria-pressed="false">Tech, AI &amp; ML</button>
+      <button class="chip" type="button" data-focus="star" aria-pressed="false">★ Shortlist</button>
+    </div>
+    <div class="controls">
+      <input id="q" type="search" placeholder="Search titles and posting text (e.g. FP&amp;A, controller, PyTorch)" aria-label="Search">
+      <select id="cat" aria-label="Category"><option value="">All categories</option></select>
+      <select id="type" aria-label="Listing type">
+        <option value="">Projects and pools</option>
+        <option value="Current project">Current projects</option>
+        <option value="Talent pool">Talent pools</option>
+      </select>
+      <select id="load" aria-label="Time commitment">
+        <option value="low" selected>Low commitment (light + flexible)</option>
+        <option value="Light">Light: up to 10 hrs/wk or per task</option>
+        <option value="Flexible">Flexible: no hours stated</option>
+        <option value="Part-time">Part-time: 15–20 hrs/wk</option>
+        <option value="Full-time">Full-time: 40 hrs/wk</option>
+        <option value="">Any commitment</option>
+      </select>
+      <select id="geo" aria-label="Where candidates can be">
+        <option value="">Any location</option>
+        <option value="open">Open outside the US</option>
+        <option value="us">US only</option>
+      </select>
+      <label for="minpay">Min $/hr <input id="minpay" type="number" min="0" step="10" placeholder="0"></label>
+      <label for="minref">Min referral $ <input id="minref" type="number" min="0" step="100" placeholder="0"></label>
+    </div>
+  </div>
+
+  <div class="meta">
+    <span id="count" aria-live="polite"></span>
+    <span><button class="linkbtn" id="copy" type="button">Copy these rows for a spreadsheet</button> · Data scraped from work.mercor.com/explore, newest listing __SCRAPED__</span>
+  </div>
+
+  <div class="head" role="row">
+    <span></span>
+    <button type="button" data-sort="title">Role</button>
+    <button type="button" data-sort="ref" data-active>Referral ↓</button>
+    <button type="button" data-sort="rmax">Pay</button>
+    <button type="button" data-sort="hours">Commitment</button>
+    <button type="button" data-sort="posted">Who / posted</button>
+  </div>
+  <div class="list" id="list"></div>
+
+  <p class="note">Referral amounts are what Mercor shows on each listing. "Fixed" rewards are paid in full after a successful placement. "Earnings share" pays 20% of what your referral earns, capped at 4× their hourly rate on their first accepted role. Commitment comes from Mercor's hours-per-week field, or from the posting text when that field is empty. "Flexible" means no weekly hours are stated, so check the posting before promising someone a light load. Mercor pays the reward only when the referred person lives in a country it supports, and the person must sign up through your link and confirm you as their referrer.</p>
+</div>
+
+<script>
+const DATA = __DATA__;
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let stars = new Set();
+try { stars = new Set(JSON.parse(localStorage.getItem('mercor-stars') || '[]')); } catch (e) {}
+const saveStars = () => { try { localStorage.setItem('mercor-stars', JSON.stringify([...stars])); } catch (e) {} };
+const state = { focus: 'all', sort: 'ref', dir: -1 };
+const isOpenGeo = j => j.geo !== 'US only';
+const hourly = j => j.freq === 'hourly' ? j.rmax : 0;
+
+// Summary
+$('#s-total').textContent = DATA.length;
+$('#s-cur').textContent = DATA.filter(j => j.type === 'Current project').length;
+$('#s-hi').textContent = DATA.filter(j => j.ref >= 1000).length;
+const isLow = j => j.load === 'Light' || j.load === 'Flexible';
+$('#s-low').textContent = DATA.filter(isLow).length;
+[...new Set(DATA.map(j => j.cat))].sort().forEach(c => {
+  const n = DATA.filter(j => j.cat === c).length;
+  $('#cat').insertAdjacentHTML('beforeend', `<option value="${esc(c)}">${esc(c)} (${n})</option>`);
+});
+
+function md(text) {
+  const lines = esc(text).split('\n');
+  let html = '', inList = false;
+  for (let raw of lines) {
+    let l = raw.trim();
+    if (!l) { if (inList) { html += '</ul>'; inList = false; } continue; }
+    l = l.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\\([^\w\s])/g, '$1')
+         .replace(/(https?:\/\/[^\s)]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
+    const b = l.match(/^[-*•]\s+(.*)/);
+    if (b) { if (!inList) { html += '<ul>'; inList = true; } html += `<li>${b[1]}</li>`; continue; }
+    if (inList) { html += '</ul>'; inList = false; }
+    const h = l.match(/^#{1,4}\s+(.*)/) || l.match(/^<strong>([^<]{2,60})<\/strong>:?$/);
+    html += h ? `<h4>${h[1]}</h4>` : `<p>${l}</p>`;
+  }
+  return html + (inList ? '</ul>' : '');
+}
+
+function filtered() {
+  const q = $('#q').value.trim().toLowerCase();
+  const cat = $('#cat').value, type = $('#type').value, geo = $('#geo').value, load = $('#load').value;
+  const minpay = +$('#minpay').value || 0, minref = +$('#minref').value || 0;
+  return DATA.filter(j =>
+    (state.focus === 'all' || (state.focus === 'star' ? stars.has(j.id) : j.focus.includes(state.focus))) &&
+    (!cat || j.cat === cat) && (!type || j.type === type) &&
+    (!load || (load === 'low' ? isLow(j) : j.load === load)) &&
+    (!geo || (geo === 'open' ? isOpenGeo(j) : !isOpenGeo(j))) &&
+    (!minpay || hourly(j) >= minpay) && (!minref || j.ref >= minref) &&
+    (!q || (j.title + ' ' + j.cat + ' ' + j.text).toLowerCase().includes(q))
+  ).sort((a, b) => {
+    const k = state.sort, va = a[k] ?? 0, vb = b[k] ?? 0;
+    return (typeof va === 'string' ? va.localeCompare(vb) : va - vb) * state.dir || b.ref - a.ref;
+  });
+}
+
+function refCell(j) {
+  if (!j.ref) return '<span class="ref">—<small>No referral reward</small></span>';
+  const amt = '$' + j.ref.toLocaleString('en-US');
+  return j.refModel === 'Earnings share'
+    ? `<span class="ref">up to ${amt}<small>20% of earnings</small></span>`
+    : `<span class="ref">up to ${amt}<small>Fixed reward</small></span>`;
+}
+
+function render() {
+  const rows = filtered();
+  $('#count').textContent = `${rows.length} of ${DATA.length} listings`;
+  if (!rows.length) { $('#list').innerHTML = '<div class="empty">No listings match these filters. Clear the search or lower the minimums.</div>'; return; }
+  $('#list').innerHTML = rows.map(j => `
+    <details class="row" data-id="${esc(j.id)}">
+      <summary>
+        <button class="star" type="button" aria-label="Shortlist ${esc(j.title)}" aria-pressed="${stars.has(j.id)}">★</button>
+        <div class="c-title"><div class="t">${esc(j.title)}</div>
+          <div class="sub"><span class="pill ${j.type === 'Talent pool' ? 'pool' : 'cur'}">${j.type}</span><span>${esc(j.cat)}</span></div></div>
+        <div class="c-x"><span class="cell-l">Referral</span>${refCell(j)}</div>
+        <div class="c-x"><span class="cell-l">Pay</span><span class="num">${esc(j.pay)}</span></div>
+        <div class="c-x"><span class="cell-l">Commitment</span><span class="pill load-${j.load}">${j.load}</span><div class="sub num">${j.hours ? j.hours + ' hrs/wk' : esc(j.hnote || j.commit)}</div></div>
+        <div class="c-x"><span class="cell-l">Who / posted</span><span class="${j.geo === 'US only' ? 'geo-us' : ''}">${esc(j.geo)}</span><div class="sub num">${esc(j.posted)}</div></div>
+      </summary>
+      <div class="detail"></div>
+    </details>`).join('');
+}
+
+$('#list').addEventListener('toggle', e => {
+  const d = e.target;
+  if (!d.open || d.dataset.filled) return;
+  const j = DATA.find(x => x.id === d.dataset.id);
+  d.querySelector('.detail').innerHTML = `
+    <div class="post">${md(j.text)}</div>
+    <dl class="facts">
+      <div><dt>Referral</dt><dd>${j.ref ? '$' + j.ref.toLocaleString('en-US') + ' · ' + j.refModel : 'None'}</dd></div>
+      <div><dt>Pay</dt><dd class="num">${esc(j.pay)}</dd></div>
+      <div><dt>Commitment</dt><dd>${j.load}${j.hours ? ' · ' + j.hours + ' hrs/week' : ''}${j.hnote ? '<br><span class="sub">' + esc(j.hnote) + '</span>' : ''}</dd></div>
+      <div><dt>Location</dt><dd>${esc(j.loc || '—')}</dd></div>
+      <div><dt>Eligible</dt><dd>${esc(j.geoFull)}</dd></div>
+      <div><dt>Open slots</dt><dd class="num">${j.slots ?? '—'}</dd></div>
+      <div><dt>Posted</dt><dd class="num">${esc(j.posted)}</dd></div>
+      <a class="open" href="${esc(j.url)}" target="_blank" rel="noopener">Open on Mercor</a>
+    </dl>`;
+  d.dataset.filled = '1';
+}, true);
+
+$('#list').addEventListener('click', e => {
+  const s = e.target.closest('.star');
+  if (!s) return;
+  e.preventDefault();
+  const id = s.closest('.row').dataset.id;
+  stars.has(id) ? stars.delete(id) : stars.add(id);
+  s.setAttribute('aria-pressed', stars.has(id));
+  saveStars();
+  if (state.focus === 'star') render();
+});
+
+document.querySelectorAll('[data-focus]').forEach(b => b.addEventListener('click', () => {
+  state.focus = b.dataset.focus;
+  document.querySelectorAll('[data-focus]').forEach(x => x.setAttribute('aria-pressed', x === b));
+  render();
+}));
+
+document.querySelectorAll('[data-sort]').forEach(b => b.addEventListener('click', () => {
+  const k = b.dataset.sort;
+  state.dir = state.sort === k ? -state.dir : (k === 'title' ? 1 : -1);
+  state.sort = k;
+  document.querySelectorAll('[data-sort]').forEach(x => {
+    x.toggleAttribute('data-active', x === b);
+    x.textContent = x.textContent.replace(/ [↑↓]$/, '') + (x === b ? (state.dir < 0 ? ' ↓' : ' ↑') : '');
+  });
+  render();
+}));
+
+['#q', '#cat', '#type', '#load', '#geo', '#minpay', '#minref'].forEach(s => $(s).addEventListener('input', render));
+
+$('#copy').addEventListener('click', () => {
+  const rows = filtered();
+  const tsv = [['Title', 'Category', 'Type', 'Referral $', 'Referral model', 'Pay', 'Commitment level', 'Hours/week', 'Eligible', 'Posted', 'URL'].join('\t'),
+    ...rows.map(j => [j.title, j.cat, j.type, j.ref, j.refModel, j.pay, j.load, j.hours ?? '', j.geoFull, j.posted, j.url].join('\t'))].join('\n');
+  const btn = $('#copy'), done = t => { btn.textContent = t; setTimeout(() => btn.textContent = 'Copy these rows for a spreadsheet', 2500); };
+  navigator.clipboard.writeText(tsv).then(() => done(`Copied ${rows.length} rows`), () => done('Copy blocked here. Use the CSV in the repo instead'));
+});
+
+render();
+</script>
