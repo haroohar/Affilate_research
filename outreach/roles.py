@@ -22,7 +22,8 @@ ISO3 = {'USA': ('US', 'United States'), 'GBR': ('GB', 'United Kingdom'), 'CAN': 
 
 
 def low_commitment_roles():
-    return [r for r in load_listings() if r['load'] in LOW and r['ref']]
+    # Yearly-salary listings are full-time jobs even when no weekly hours are stated.
+    return [r for r in load_listings() if r['load'] in LOW and r['ref'] and r['freq'] != 'yearly']
 
 
 def min_years(text):

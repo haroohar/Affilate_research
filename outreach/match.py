@@ -22,6 +22,13 @@ def career_years(profile):
 
 
 def evaluate(profile, role_profile):
+    ev = _evaluate(profile, role_profile)
+    ev['check'] = role_profile.get('check') or []
+    ev['score'] = max(0, min(100, ev['score']))
+    return ev
+
+
+def _evaluate(profile, role_profile):
     reasons, score = [], 0
     job = latest_job(profile)
     position = job.get('position') or ''
@@ -57,6 +64,18 @@ def evaluate(profile, role_profile):
     kws = [k for k in role_profile.get('keywords', []) if re.search(rf'(?<![a-z]){re.escape(k.lower())}(?![a-z])', blob)]
     score += min(len(kws), 3) * 10
     reasons.append('Relevant terms: ' + ', '.join(kws) if kws else 'No role keywords found in profile')
+
+    creds = role_profile.get('credentials') or []
+    if creds:
+        edu = ' '.join(' '.join(str(e.get(k) or '') for k in ('degree', 'fieldOfStudy', 'schoolName'))
+                       for e in profile.get('education') or []).lower()
+        edu += ' ' + title_text + ' ' + ' '.join((c.get('name') or c.get('title') or '').lower()
+                                                 for c in profile.get('certifications') or [] if isinstance(c, dict))
+        found = next((c for c in creds if re.search(rf'(?<![a-z]){re.escape(c)}(?![a-z])', edu)), None)
+        if found:
+            score += 10; reasons.append(f'Credential found: {found.upper()}')
+        else:
+            score -= 15; reasons.append('Required credential not found on profile (' + '/'.join(c.upper() for c in creds[:3]) + ')')
 
     cc = ((profile.get('location') or {}).get('countryCode') or '').upper()
     allowed = role_profile.get('countries_iso2') or []

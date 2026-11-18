@@ -55,6 +55,32 @@ def test_ai_ark_body():
     assert 'Pakistan' in b['contact']['location']['any']['exclude'] and b['size'] == 25
 
 
+def test_full_run_offline():
+    """Steps 2-4, tracker, report and mark, with both APIs replaced by made-up data."""
+    import tempfile, types, run
+    tmp = tempfile.mkdtemp()
+    run.OUT, run.TRACKER = tmp, os.path.join(tmp, 'tracker.csv')
+    good = fake_profile()
+    off = fake_profile(open_to_work=False)
+    off['linkedinUrl'] = 'https://www.linkedin.com/in/example-closed'
+    clients.ai_ark_search = lambda prof, size: {'total': 2, 'people': [
+        PERSON, {'linkedin': off['linkedinUrl'], 'first_name': 'Sam', 'name': 'Sam Example'}]}
+    clients.apify_profiles = lambda urls: [good, off]
+    args = types.SimpleNamespace(urls=None, limit=10, refresh=True, max_chars=200, referral_link=None)
+    tracker = {}
+    run.run_role(roles.find_role('FP&A Expert'), args, tracker)
+    run.save_tracker(tracker)
+    t = run.load_tracker()
+    assert t['example-fpa']['status'] == 'to_send' and t['example-fpa']['note'], t['example-fpa']
+    assert t['example-closed']['status'] == 'skip' and not t['example-closed']['note']
+    assert 'Copy note' in open(run.write_report(t)).read()
+    # the same person turned up for another role is not checked or contacted again
+    new, skipped = run.run_role(roles.find_role('Accounting Expert'), args, t)
+    assert skipped == 2 and new == 0
+    run.cmd_mark(types.SimpleNamespace(who=PERSON['linkedin'], status='note_sent'))
+    assert run.load_tracker()['example-fpa']['status'] == 'note_sent'
+
+
 if __name__ == '__main__':
     tests = [v for k, v in sorted(globals().items()) if k.startswith('test_')]
     for t in tests:

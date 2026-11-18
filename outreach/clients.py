@@ -18,6 +18,49 @@ class ApiError(RuntimeError):
     pass
 
 
+def load_env(path=os.path.join(os.path.dirname(os.path.abspath(__file__)), '.env')):
+    """Read KEY=value lines from outreach/.env (git-ignored) without overriding real environment variables."""
+    if not os.path.exists(path):
+        return
+    for line in open(path, encoding='utf-8'):
+        line = line.strip()
+        if line and not line.startswith('#') and '=' in line:
+            k, v = line.split('=', 1)
+            v = v.strip().strip('"').strip("'")
+            if v:
+                os.environ.setdefault(k.strip(), v)
+
+
+load_env()
+
+
+def _get(url, headers, timeout=30):
+    req = urllib.request.Request(url, headers={'Accept': 'application/json', **headers})
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            return json.load(r)
+    except urllib.error.HTTPError as e:
+        raise ApiError(f'{url} returned HTTP {e.code}: {e.read().decode("utf-8", "replace")[:300]}') from None
+
+
+def check_keys():
+    """Free calls that confirm each key works: AI Ark credit balance and the Apify account."""
+    out = {}
+    try:
+        res = _get(f'{AI_ARK}/payments/credits', {'X-TOKEN': os.environ.get('AI_ARK_TOKEN', 'proxy-injected')})
+        out['AI Ark'] = f"OK, {res.get('total')} credits left"
+    except Exception as e:  # noqa: BLE001 - report every failure the same way
+        out['AI Ark'] = f'Not working: {e}'
+    try:
+        res = _get('https://api.apify.com/v2/users/me',
+                   {'Authorization': f"Bearer {os.environ.get('APIFY_TOKEN', 'proxy-injected')}"})
+        d = res.get('data') or {}
+        out['Apify'] = f"OK, account {d.get('username')} on plan {(d.get('plan') or {}).get('id', '?')}"
+    except Exception as e:  # noqa: BLE001
+        out['Apify'] = f'Not working: {e}'
+    return out
+
+
 def _post(url, body, headers, timeout=120):
     data = json.dumps(body).encode()
     for attempt in range(4):

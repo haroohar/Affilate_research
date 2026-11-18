@@ -1,49 +1,787 @@
 {
   "_comment": "How to search for and verify candidates for a Mercor listing. Keyed by Mercor listingId. Roles without an entry get a profile generated from the listing title and posting text (see roles.py). Edit freely: titles go to AI Ark as SMART title matches, keywords are checked against the LinkedIn profile.",
-
   "list_AAABoddaxN8U-VxGZ5BD-Y_n": {
     "label": "FP&A Expert",
     "field": "FP&A",
-    "titles": ["FP&A Manager", "Financial Planning and Analysis", "FP&A Analyst", "Senior Financial Analyst", "Finance Manager", "Director of FP&A", "Head of FP&A", "Controller"],
-    "seniority": ["senior", "manager", "head", "director", "vp", "c_suite"],
+    "titles": [
+      "FP&A Manager",
+      "Financial Planning and Analysis",
+      "FP&A Analyst",
+      "Senior Financial Analyst",
+      "Finance Manager",
+      "Director of FP&A",
+      "Head of FP&A",
+      "Controller"
+    ],
+    "seniority": [
+      "senior",
+      "manager",
+      "head",
+      "director",
+      "vp",
+      "c_suite"
+    ],
     "min_years": 3,
-    "keywords": ["fp&a", "financial planning", "forecast", "budget", "variance", "financial model", "corporate finance"],
+    "keywords": [
+      "fp&a",
+      "financial planning",
+      "forecast",
+      "budget",
+      "variance",
+      "financial model",
+      "corporate finance"
+    ],
     "pitch": "flexible FP&A work evaluating AI models"
   },
   "list_AAABoddartrKlmqr13pC7I-j": {
     "label": "Accounting Expert",
     "field": "accounting",
-    "titles": ["Accountant", "Senior Accountant", "Accounting Manager", "Controller", "Assistant Controller", "CPA", "Audit Manager", "Senior Auditor"],
-    "seniority": ["senior", "manager", "head", "director", "vp", "c_suite"],
+    "titles": [
+      "Accountant",
+      "Senior Accountant",
+      "Accounting Manager",
+      "Controller",
+      "Assistant Controller",
+      "CPA",
+      "Audit Manager",
+      "Senior Auditor"
+    ],
+    "seniority": [
+      "senior",
+      "manager",
+      "head",
+      "director",
+      "vp",
+      "c_suite"
+    ],
     "min_years": 3,
-    "keywords": ["accounting", "cpa", "gaap", "ifrs", "audit", "reconciliation", "month-end close", "general ledger"],
+    "keywords": [
+      "accounting",
+      "cpa",
+      "gaap",
+      "ifrs",
+      "audit",
+      "reconciliation",
+      "month-end close",
+      "general ledger"
+    ],
     "pitch": "flexible accounting work evaluating AI models"
   },
   "list_AAABoddbQUy7LCQO6PFLPLqP": {
     "label": "Investment Banking Expert",
     "field": "investment banking",
-    "titles": ["Investment Banking Associate", "Investment Banking Analyst", "Vice President Investment Banking", "M&A Associate", "Corporate Finance Associate", "Investment Banker"],
-    "seniority": ["mid_level", "senior", "manager", "director", "vp"],
+    "titles": [
+      "Investment Banking Associate",
+      "Investment Banking Analyst",
+      "Vice President Investment Banking",
+      "M&A Associate",
+      "Corporate Finance Associate",
+      "Investment Banker"
+    ],
+    "seniority": [
+      "mid_level",
+      "senior",
+      "manager",
+      "director",
+      "vp"
+    ],
     "min_years": 3,
-    "keywords": ["investment banking", "m&a", "valuation", "dcf", "lbo", "pitch book", "capital markets"],
+    "keywords": [
+      "investment banking",
+      "m&a",
+      "valuation",
+      "dcf",
+      "lbo",
+      "pitch book",
+      "capital markets"
+    ],
     "pitch": "flexible investment-banking work evaluating AI models"
   },
   "list_AAABodda2HesKOKwf2BBqavC": {
     "label": "HR Expert",
     "field": "HR",
-    "titles": ["HR Manager", "Human Resources Manager", "HR Business Partner", "People Operations Manager", "Head of People", "HR Director"],
-    "seniority": ["senior", "manager", "head", "director", "vp"],
+    "titles": [
+      "HR Manager",
+      "Human Resources Manager",
+      "HR Business Partner",
+      "People Operations Manager",
+      "Head of People",
+      "HR Director"
+    ],
+    "seniority": [
+      "senior",
+      "manager",
+      "head",
+      "director",
+      "vp"
+    ],
     "min_years": 3,
-    "keywords": ["human resources", "hr", "people operations", "talent", "employee relations", "compensation", "hris"],
+    "keywords": [
+      "human resources",
+      "hr",
+      "people operations",
+      "talent",
+      "employee relations",
+      "compensation",
+      "hris"
+    ],
     "pitch": "flexible HR work evaluating AI models"
   },
   "list_AAABlzI3p6G_LDaGWuNNEa6l": {
     "label": "Applied Engineer, Evaluations",
     "field": "ML engineering",
-    "titles": ["Machine Learning Engineer", "Applied Scientist", "ML Engineer", "AI Engineer", "Research Engineer", "Applied ML Engineer"],
-    "seniority": ["mid_level", "senior", "manager", "head", "director"],
+    "titles": [
+      "Machine Learning Engineer",
+      "Applied Scientist",
+      "ML Engineer",
+      "AI Engineer",
+      "Research Engineer",
+      "Applied ML Engineer"
+    ],
+    "seniority": [
+      "mid_level",
+      "senior",
+      "manager",
+      "head",
+      "director"
+    ],
     "min_years": 3,
-    "keywords": ["machine learning", "llm", "evaluation", "python", "pytorch", "nlp", "model"],
+    "keywords": [
+      "machine learning",
+      "llm",
+      "evaluation",
+      "python",
+      "pytorch",
+      "nlp",
+      "model"
+    ],
     "pitch": "flexible, well-paid work building evaluations for AI models"
+  },
+  "list_AAABoYr34sDSXamCPtFMIrdv": {
+    "label": "Mathematics Domain Expert",
+    "field": "mathematics",
+    "titles": [
+      "Mathematician",
+      "Professor of Mathematics",
+      "Postdoctoral Researcher Mathematics",
+      "Research Scientist Mathematics",
+      "Statistician",
+      "Operations Research Scientist"
+    ],
+    "seniority": [],
+    "min_years": 0,
+    "keywords": [
+      "mathematics",
+      "proof",
+      "statistics",
+      "operations research",
+      "topology",
+      "algebra",
+      "analysis"
+    ],
+    "credentials": [
+      "phd",
+      "ph.d",
+      "doctor"
+    ],
+    "check": [
+      "PhD in mathematics, statistics, OR or a close field",
+      "Practising specialist, US-based"
+    ],
+    "pitch": "flexible work evaluating AI math reasoning"
+  },
+  "list_AAABoYr3vuO4cXwvq0FKEZxq": {
+    "label": "Biology & Life Sciences Domain Expert",
+    "field": "life sciences",
+    "titles": [
+      "Research Scientist",
+      "Biologist",
+      "Postdoctoral Fellow",
+      "Molecular Biologist",
+      "Principal Scientist",
+      "Professor of Biology"
+    ],
+    "seniority": [],
+    "min_years": 0,
+    "keywords": [
+      "biology",
+      "molecular",
+      "genetics",
+      "biochemistry",
+      "cell",
+      "neuroscience",
+      "immunology"
+    ],
+    "credentials": [
+      "phd",
+      "ph.d",
+      "doctor"
+    ],
+    "check": [
+      "PhD in a life-science field",
+      "US-based"
+    ],
+    "pitch": "flexible work evaluating AI science reasoning"
+  },
+  "list_AAABoYr3mMPdrm41A5tHTK36": {
+    "label": "Chemistry Domain Expert",
+    "field": "chemistry",
+    "titles": [
+      "Chemist",
+      "Research Chemist",
+      "Synthetic Chemist",
+      "Postdoctoral Researcher Chemistry",
+      "Principal Scientist Chemistry",
+      "Professor of Chemistry"
+    ],
+    "seniority": [],
+    "min_years": 0,
+    "keywords": [
+      "chemistry",
+      "synthesis",
+      "organic",
+      "analytical",
+      "spectroscopy",
+      "catalysis"
+    ],
+    "credentials": [
+      "phd",
+      "ph.d",
+      "doctor"
+    ],
+    "check": [
+      "PhD in chemistry or a close field",
+      "US-based"
+    ],
+    "pitch": "flexible work evaluating AI chemistry reasoning"
+  },
+  "list_AAABoYr3SG3-4yi5ct9Bgp3k": {
+    "label": "Physics Domain Expert",
+    "field": "physics",
+    "titles": [
+      "Physicist",
+      "Research Physicist",
+      "Postdoctoral Researcher Physics",
+      "Research Scientist Physics",
+      "Professor of Physics"
+    ],
+    "seniority": [],
+    "min_years": 0,
+    "keywords": [
+      "physics",
+      "quantum",
+      "condensed matter",
+      "optics",
+      "astrophysics",
+      "particle"
+    ],
+    "credentials": [
+      "phd",
+      "ph.d",
+      "doctor"
+    ],
+    "check": [
+      "PhD in physics or a close field",
+      "US-based"
+    ],
+    "pitch": "flexible work evaluating AI physics reasoning"
+  },
+  "list_AAABnJxZFVfIEAN0_ZNOCrGk": {
+    "label": "Software Engineer (AI-Native Platform)",
+    "field": "software engineering",
+    "titles": [
+      "Software Engineer",
+      "Senior Software Engineer",
+      "Full Stack Engineer",
+      "Backend Engineer",
+      "AI Engineer",
+      "Integration Engineer"
+    ],
+    "seniority": [
+      "mid_level",
+      "senior",
+      "manager",
+      "head"
+    ],
+    "min_years": 3,
+    "keywords": [
+      "typescript",
+      "python",
+      "api",
+      "integration",
+      "llm",
+      "node",
+      "react",
+      "ai"
+    ],
+    "check": [
+      "US-based"
+    ],
+    "pitch": "flexible, well-paid software work on AI platforms"
+  },
+  "list_AAABoYQqZfrpr7vPO4JFA62D": {
+    "label": "Luxury Automotive Strategy Expert",
+    "field": "luxury automotive strategy",
+    "titles": [
+      "Head of Strategy",
+      "Strategy Director",
+      "Business Strategy Director",
+      "Brand Director",
+      "Senior Advisor",
+      "Board Member"
+    ],
+    "seniority": [
+      "director",
+      "vp",
+      "c_suite",
+      "head",
+      "partner"
+    ],
+    "min_years": 10,
+    "keywords": [
+      "luxury",
+      "automotive",
+      "ferrari",
+      "porsche",
+      "lamborghini",
+      "bentley",
+      "rolls-royce",
+      "aston martin",
+      "mclaren",
+      "maserati",
+      "strategy"
+    ],
+    "check": [
+      "10+ years of strategy work with real luxury-automotive focus",
+      "Senior advisor or board-level experience"
+    ],
+    "pitch": "a short, very well-paid strategy advisory project for AI"
+  },
+  "list_AAABoDrYQdAJqq6xRalOo4e9": {
+    "label": "Expert Interviewer",
+    "field": "interviewing",
+    "titles": [
+      "Technical Recruiter",
+      "Talent Acquisition Partner",
+      "Recruiting Manager",
+      "Interviewer",
+      "Executive Recruiter"
+    ],
+    "seniority": [
+      "senior",
+      "manager",
+      "head",
+      "director"
+    ],
+    "min_years": 3,
+    "keywords": [
+      "interview",
+      "recruit",
+      "talent acquisition",
+      "assessment",
+      "hiring"
+    ],
+    "check": [
+      "US-based"
+    ],
+    "pitch": "paid, light-hours expert interviewing work"
+  },
+  "list_AAABoTw2X50MatW_D09FdpXK": {
+    "label": "Pediatric Emergency / Urgent Care Physician (MD)",
+    "field": "pediatric emergency medicine",
+    "titles": [
+      "Pediatric Emergency Physician",
+      "Pediatric Urgent Care Physician",
+      "Pediatric Hospitalist",
+      "Pediatrician",
+      "Attending Physician Pediatric Emergency"
+    ],
+    "seniority": [],
+    "min_years": 0,
+    "keywords": [
+      "pediatric",
+      "emergency",
+      "urgent care",
+      "physician",
+      "md"
+    ],
+    "credentials": [
+      "md",
+      "m.d",
+      "doctor of medicine"
+    ],
+    "check": [
+      "MD with pediatric ED or urgent-care experience",
+      "US-based"
+    ],
+    "pitch": "~10 hrs/wk clinical documentation work for AI"
+  },
+  "list_AAABoGQSiGKJ1DuAHBZB_p5e": {
+    "label": "Multilingual Inpatient Hospitalist (MD)",
+    "field": "hospital medicine",
+    "titles": [
+      "Hospitalist",
+      "Internal Medicine Physician",
+      "Attending Physician",
+      "Nocturnist"
+    ],
+    "seniority": [],
+    "min_years": 5,
+    "keywords": [
+      "hospitalist",
+      "internal medicine",
+      "inpatient",
+      "physician"
+    ],
+    "credentials": [
+      "md",
+      "m.d",
+      "doctor of medicine"
+    ],
+    "check": [
+      "MD, 2+ years post-residency, current inpatient practice",
+      "Second language at C1 or above",
+      "US-based"
+    ],
+    "pitch": "~10 hrs/wk clinical documentation work for AI"
+  },
+  "list_AAABoLA_3WENxZ1c_rpCtI2L": {
+    "label": "Lawyers & Legal Experts (Global)",
+    "field": "law",
+    "titles": [
+      "Attorney",
+      "Lawyer",
+      "Associate Attorney",
+      "Senior Associate",
+      "Legal Counsel",
+      "Solicitor",
+      "Rechtsanwalt",
+      "Avocat",
+      "Abogado"
+    ],
+    "seniority": [
+      "senior",
+      "manager",
+      "partner",
+      "head",
+      "director"
+    ],
+    "min_years": 3,
+    "keywords": [
+      "law",
+      "legal",
+      "litigation",
+      "contracts",
+      "counsel",
+      "attorney",
+      "solicitor"
+    ],
+    "credentials": [
+      "jd",
+      "j.d",
+      "llb",
+      "ll.b",
+      "llm",
+      "bar",
+      "law"
+    ],
+    "check": [
+      "Qualified lawyer in the US, UK, Germany, France, Spain, Australia, Japan or Korea"
+    ],
+    "pitch": "flexible legal work evaluating AI models"
+  },
+  "list_AAABocQXRHSLD4MqX_hGVZVy": {
+    "label": "Individual Tax Professional (CPA / EA)",
+    "field": "individual tax",
+    "titles": [
+      "Tax Manager",
+      "Senior Tax Associate",
+      "Tax Senior",
+      "Enrolled Agent",
+      "CPA Tax",
+      "Private Client Tax Manager"
+    ],
+    "seniority": [
+      "senior",
+      "manager",
+      "director"
+    ],
+    "min_years": 3,
+    "keywords": [
+      "tax",
+      "1040",
+      "individual",
+      "private client",
+      "cpa",
+      "enrolled agent",
+      "k-1"
+    ],
+    "credentials": [
+      "cpa",
+      "enrolled agent",
+      "ea"
+    ],
+    "check": [
+      "3-8 years preparing complex 1040 returns",
+      "Big 4, national or strong regional firm",
+      "US-based"
+    ],
+    "pitch": "flexible tax work evaluating AI models"
+  },
+  "list_AAABodjkhcin__KeNFZHg54O": {
+    "label": "Enterprise Sales Manager",
+    "field": "enterprise sales",
+    "titles": [
+      "Sales Manager",
+      "Enterprise Sales Manager",
+      "Regional Sales Manager",
+      "Area Sales Manager",
+      "Director of Sales"
+    ],
+    "seniority": [
+      "manager",
+      "director",
+      "head"
+    ],
+    "min_years": 5,
+    "keywords": [
+      "quota",
+      "account executive",
+      "enterprise",
+      "b2b",
+      "saas",
+      "sales team"
+    ],
+    "check": [
+      "Managed quota-carrying AEs in the last 12 months",
+      "Company 500+ staff, 25+ reps",
+      "Not currently at a sales-tech/GTM vendor",
+      "US-based"
+    ],
+    "pitch": "~10 hrs/wk paid work training AI on sales"
+  },
+  "list_AAABodjkZ9uPRh5LQSxNUZtG": {
+    "label": "Enterprise Account Executive",
+    "field": "enterprise sales",
+    "titles": [
+      "Enterprise Account Executive",
+      "Strategic Account Executive",
+      "Senior Account Executive",
+      "Mid-Market Account Executive"
+    ],
+    "seniority": [
+      "senior",
+      "mid_level",
+      "manager"
+    ],
+    "min_years": 5,
+    "keywords": [
+      "quota",
+      "enterprise",
+      "b2b",
+      "saas",
+      "account executive",
+      "closing"
+    ],
+    "check": [
+      "Quota-carrying AE role in the last 12 months",
+      "Company 500+ staff, 25+ reps",
+      "Not currently at a sales-tech/GTM vendor",
+      "US-based"
+    ],
+    "pitch": "~10 hrs/wk paid work training AI on sales"
+  },
+  "list_AAABm9Edxc-X1o57aoNE9Ylz": {
+    "label": "SOC Investigation Specialist",
+    "field": "security operations",
+    "titles": [
+      "SOC Analyst",
+      "Security Analyst",
+      "Incident Responder",
+      "Threat Hunter",
+      "Cyber Security Analyst",
+      "Detection Engineer"
+    ],
+    "seniority": [
+      "mid_level",
+      "senior",
+      "manager"
+    ],
+    "min_years": 3,
+    "keywords": [
+      "soc",
+      "splunk",
+      "siem",
+      "edr",
+      "crowdstrike",
+      "incident response",
+      "threat"
+    ],
+    "check": [
+      "3+ years in a production SOC, Tier 2+ preferred",
+      "Hands-on Splunk"
+    ],
+    "pitch": "flexible paid security-investigation work for AI"
+  },
+  "list_AAABoWoZmUZ_SLUqJNtCkJsp": {
+    "label": "US Contract Attorney — Litigation",
+    "field": "litigation",
+    "titles": [
+      "Litigation Associate",
+      "Associate Attorney",
+      "Senior Associate",
+      "Litigator",
+      "Trial Attorney"
+    ],
+    "seniority": [
+      "senior",
+      "mid_level",
+      "partner"
+    ],
+    "min_years": 3,
+    "keywords": [
+      "litigation",
+      "discovery",
+      "motion",
+      "trial",
+      "civil",
+      "commercial"
+    ],
+    "credentials": [
+      "jd",
+      "j.d",
+      "juris doctor",
+      "bar"
+    ],
+    "check": [
+      "3+ years US litigation",
+      "AmLaw 100 experience preferred",
+      "US bar admission"
+    ],
+    "pitch": "flexible legal work evaluating AI models"
+  },
+  "list_AAABocvmQyKqYVaWnhNJlLpY": {
+    "label": "Fab Safety and Emergency Response Expert",
+    "field": "fab safety",
+    "titles": [
+      "EHS Engineer",
+      "Safety Engineer",
+      "Fab Facilities Engineer",
+      "Emergency Response Team",
+      "Electrical Safety Engineer",
+      "Industrial Hygienist"
+    ],
+    "seniority": [],
+    "min_years": 3,
+    "keywords": [
+      "ehs",
+      "fab",
+      "semiconductor",
+      "semi s2",
+      "nfpa",
+      "hazwoper",
+      "emergency response",
+      "cleanroom"
+    ],
+    "check": [
+      "Fab-floor experience within the past 8 years",
+      "Safety certification (CSP, CIH, ASP, HAZWOPER, CHMM) helps"
+    ],
+    "pitch": "~10 hrs/wk paid safety work training AI"
+  },
+  "list_AAABod-XpCFXW1KhVe9F8pnR": {
+    "label": "Cyber Engineer",
+    "field": "application security",
+    "titles": [
+      "Application Security Engineer",
+      "Penetration Tester",
+      "Security Engineer",
+      "Vulnerability Researcher",
+      "Offensive Security Engineer"
+    ],
+    "seniority": [
+      "mid_level",
+      "senior",
+      "manager"
+    ],
+    "min_years": 3,
+    "keywords": [
+      "appsec",
+      "penetration",
+      "vulnerability",
+      "exploit",
+      "owasp",
+      "secure code",
+      "burp"
+    ],
+    "check": [
+      "3+ years in appsec, vuln research, pentesting or secure engineering"
+    ],
+    "pitch": "paid per-task security work for AI"
+  },
+  "list_AAABoGYcR_Q8k7gMhOdC84s-": {
+    "label": "Certified Medical Coder",
+    "field": "medical coding",
+    "titles": [
+      "Medical Coder",
+      "Certified Professional Coder",
+      "Risk Adjustment Coder",
+      "Clinical Documentation Specialist",
+      "Coding Specialist"
+    ],
+    "seniority": [],
+    "min_years": 2,
+    "keywords": [
+      "icd-10",
+      "coding",
+      "cpc",
+      "ccs",
+      "hcc",
+      "risk adjustment",
+      "cdi"
+    ],
+    "credentials": [
+      "cpc",
+      "ccs",
+      "ccds",
+      "chc"
+    ],
+    "check": [
+      "Active CCDS, CHC, CCS or CPC certification",
+      "Second language",
+      "US-based"
+    ],
+    "pitch": "~10 hrs/wk paid coding work for AI"
+  },
+  "list_AAABoF6Jhh_gEMICBt9PQoR0": {
+    "label": "Pediatric Inpatient Nurse (RN)",
+    "field": "pediatric nursing",
+    "titles": [
+      "Pediatric Nurse",
+      "Registered Nurse Pediatrics",
+      "Pediatric RN",
+      "Staff Nurse Pediatrics",
+      "PICU Nurse"
+    ],
+    "seniority": [],
+    "min_years": 2,
+    "keywords": [
+      "pediatric",
+      "nurse",
+      "rn",
+      "inpatient",
+      "bedside",
+      "picu"
+    ],
+    "credentials": [
+      "rn",
+      "bsn",
+      "registered nurse"
+    ],
+    "check": [
+      "Active US RN license (not California)",
+      "Inpatient bedside within the past 10 years"
+    ],
+    "pitch": "flexible paid nursing work evaluating AI"
   }
 }

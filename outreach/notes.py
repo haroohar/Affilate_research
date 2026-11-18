@@ -50,7 +50,7 @@ def follow_up(person, profile, role_profile, referral_link=None):
     role = role_profile['role']
     link = referral_link or '[paste your Mercor referral link for this role]'
     return (f"Thanks for connecting, {first_name(person, profile)}! The role is \"{role['title']}\" on Mercor, which runs paid "
-            f"AI-training projects. It pays {rate_text(role)}, and is remote with {hours_text(role)}. You'd use your "
+            f"AI-training projects. It pays {rate_text(role)} and is remote with {hours_text(role)}. You'd use your "
             f"{role_profile['field']} judgement to review and improve AI answers.\n\n"
             f"If you'd like to apply, sign up through this link and confirm me as your referrer when asked: {link}\n\n"
             f"To be upfront: I'm an independent referrer, not Mercor staff, and Mercor pays me a referral bonus if you're "
