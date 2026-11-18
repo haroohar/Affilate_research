@@ -5,7 +5,7 @@ Usage: python3 scrape_mercor.py && python3 views/build_database.py
 import json, os, re
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-JOBS = json.load(open(os.path.join(HERE, '..', 'mercor_jobs.json'), encoding='utf-8'))
+JOBS_PATH = os.path.join(HERE, '..', 'mercor_jobs.json')
 
 # Mercor leaves listingDomain empty on ~90 listings; fill those from the title.
 INFER = [
@@ -98,14 +98,14 @@ def referral(j):
     return 'None', 0
 
 
-out = []
-for j in JOBS:
+def summarize(j):
+    """One listing as the page (and the outreach pipeline) uses it."""
     g_short, g_full = geo(j)
     r_model, r_amt = referral(j)
     blob = ' '.join([j.get('title') or '', category(j)])
     focus = [k for k, rx in FOCUS.items() if rx.search(blob)]
     lvl, hrs, hnote = load(j)
-    out.append({
+    return {
         'id': j['listingId'],
         'title': j.get('title') or '',
         'url': j['url'],
@@ -122,22 +122,34 @@ for j in JOBS:
         'loc': j.get('location') or '',
         'geo': g_short,
         'geoFull': g_full,
+        'eligible': j.get('eligibleLocation') or [],
         'refModel': r_model,
         'ref': r_amt,
         'slots': j.get('remainingSlots'),
         'posted': (j.get('postedAt') or '')[:10],
         'focus': focus,
         'text': j.get('fullPostingText') or j.get('description') or '',
-    })
+    }
 
-data = json.dumps(out, ensure_ascii=False).replace('</', '<\\/')
-tpl = open(os.path.join(HERE, 'database_template.html'), encoding='utf-8').read()
-scraped = max(o['posted'] for o in out)
-html = tpl.replace('__DATA__', data).replace('__SCRAPED__', scraped)
-open(os.path.join(HERE, 'mercor_database.html'), 'w', encoding='utf-8').write(html)
-cats = {}
-for o in out:
-    cats[o['cat']] = cats.get(o['cat'], 0) + 1
-print(len(out), 'listings;', sorted(cats.items(), key=lambda x: -x[1]))
-print('load', {k: sum(o['load'] == k for o in out) for k in ('Light', 'Flexible', 'Part-time', 'Full-time')})
-print('focus finance', sum('finance' in o['focus'] for o in out), 'tech', sum('tech' in o['focus'] for o in out))
+
+def load_listings():
+    return [summarize(j) for j in json.load(open(JOBS_PATH, encoding='utf-8'))]
+
+
+def main():
+    out = load_listings()
+    data = json.dumps(out, ensure_ascii=False).replace('</', '<\\/')
+    tpl = open(os.path.join(HERE, 'database_template.html'), encoding='utf-8').read()
+    scraped = max(o['posted'] for o in out)
+    html = tpl.replace('__DATA__', data).replace('__SCRAPED__', scraped)
+    open(os.path.join(HERE, 'mercor_database.html'), 'w', encoding='utf-8').write(html)
+    cats = {}
+    for o in out:
+        cats[o['cat']] = cats.get(o['cat'], 0) + 1
+    print(len(out), 'listings;', sorted(cats.items(), key=lambda x: -x[1]))
+    print('load', {k: sum(o['load'] == k for o in out) for k in ('Light', 'Flexible', 'Part-time', 'Full-time')})
+    print('focus finance', sum('finance' in o['focus'] for o in out), 'tech', sum('tech' in o['focus'] for o in out))
+
+
+if __name__ == '__main__':
+    main()

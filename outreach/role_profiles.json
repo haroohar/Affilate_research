@@ -1,0 +1,49 @@
+{
+  "_comment": "How to search for and verify candidates for a Mercor listing. Keyed by Mercor listingId. Roles without an entry get a profile generated from the listing title and posting text (see roles.py). Edit freely: titles go to AI Ark as SMART title matches, keywords are checked against the LinkedIn profile.",
+
+  "list_AAABoddaxN8U-VxGZ5BD-Y_n": {
+    "label": "FP&A Expert",
+    "field": "FP&A",
+    "titles": ["FP&A Manager", "Financial Planning and Analysis", "FP&A Analyst", "Senior Financial Analyst", "Finance Manager", "Director of FP&A", "Head of FP&A", "Controller"],
+    "seniority": ["senior", "manager", "head", "director", "vp", "c_suite"],
+    "min_years": 3,
+    "keywords": ["fp&a", "financial planning", "forecast", "budget", "variance", "financial model", "corporate finance"],
+    "pitch": "flexible FP&A work evaluating AI models"
+  },
+  "list_AAABoddartrKlmqr13pC7I-j": {
+    "label": "Accounting Expert",
+    "field": "accounting",
+    "titles": ["Accountant", "Senior Accountant", "Accounting Manager", "Controller", "Assistant Controller", "CPA", "Audit Manager", "Senior Auditor"],
+    "seniority": ["senior", "manager", "head", "director", "vp", "c_suite"],
+    "min_years": 3,
+    "keywords": ["accounting", "cpa", "gaap", "ifrs", "audit", "reconciliation", "month-end close", "general ledger"],
+    "pitch": "flexible accounting work evaluating AI models"
+  },
+  "list_AAABoddbQUy7LCQO6PFLPLqP": {
+    "label": "Investment Banking Expert",
+    "field": "investment banking",
+    "titles": ["Investment Banking Associate", "Investment Banking Analyst", "Vice President Investment Banking", "M&A Associate", "Corporate Finance Associate", "Investment Banker"],
+    "seniority": ["mid_level", "senior", "manager", "director", "vp"],
+    "min_years": 3,
+    "keywords": ["investment banking", "m&a", "valuation", "dcf", "lbo", "pitch book", "capital markets"],
+    "pitch": "flexible investment-banking work evaluating AI models"
+  },
+  "list_AAABodda2HesKOKwf2BBqavC": {
+    "label": "HR Expert",
+    "field": "HR",
+    "titles": ["HR Manager", "Human Resources Manager", "HR Business Partner", "People Operations Manager", "Head of People", "HR Director"],
+    "seniority": ["senior", "manager", "head", "director", "vp"],
+    "min_years": 3,
+    "keywords": ["human resources", "hr", "people operations", "talent", "employee relations", "compensation", "hris"],
+    "pitch": "flexible HR work evaluating AI models"
+  },
+  "list_AAABlzI3p6G_LDaGWuNNEa6l": {
+    "label": "Applied Engineer, Evaluations",
+    "field": "ML engineering",
+    "titles": ["Machine Learning Engineer", "Applied Scientist", "ML Engineer", "AI Engineer", "Research Engineer", "Applied ML Engineer"],
+    "seniority": ["mid_level", "senior", "manager", "head", "director"],
+    "min_years": 3,
+    "keywords": ["machine learning", "llm", "evaluation", "python", "pytorch", "nlp", "model"],
+    "pitch": "flexible, well-paid work building evaluations for AI models"
+  }
+}
