@@ -27,6 +27,11 @@ header p { margin: 0; color: var(--muted); max-width: 70ch }
   border-radius: 6px; background: var(--surface); color: var(--fg) }
 .chip { font: 500 13px var(--body); border: 1px solid var(--line); background: var(--surface); color: var(--fg);
   padding: 6px 12px; border-radius: 999px; cursor: pointer }
+.chip:disabled { opacity: .45; cursor: default }
+.filters { display: flex; flex-direction: column; gap: 10px; margin: -8px 0 24px }
+.frow { display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap }
+.flabel { font: 600 11px var(--body); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); min-width: 92px }
+.chiprow { display: flex; flex-wrap: wrap; gap: 8px; min-width: 0 }
 .chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--surface) }
 .chip:focus-visible, .controls input:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
 .grid { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 28px; align-items: start }
@@ -70,8 +75,11 @@ html { scroll-behavior: smooth }
   </header>
   <div class="controls">
     <input id="q" type="search" placeholder="Search titles and posting text (e.g. CUDA, Rust, Kubernetes)" aria-label="Search postings">
-    <div id="chips" style="display:flex;flex-wrap:wrap;gap:8px"></div>
     <button class="chip" id="expand" type="button">Collapse all</button>
+  </div>
+  <div class="filters">
+    <div class="frow"><span class="flabel">Area</span><div id="chips" class="chiprow"></div></div>
+    <div class="frow"><span class="flabel">Hours / week</span><div id="hchips" class="chiprow"></div></div>
   </div>
   <div class="grid">
     <nav id="nav" aria-label="Roles"></nav>
@@ -84,7 +92,18 @@ html { scroll-behavior: smooth }
 <script>
 const JOBS = __DATA__;
 const groups = [...new Set(JOBS.map(j => j.group))];
-let active = 'All', query = '', allOpen = true;
+let active = 'All', query = '', allOpen = true, hband = 'any';
+// Hours bands use the listing's hoursPerWeek field; one-off interviews and tasks have none.
+const HBANDS = [
+  ['any', 'Any', () => true],
+  ['le10', 'Up to 10', h => h != null && h <= 10],
+  ['11-20', '11–20', h => h != null && h > 10 && h <= 20],
+  ['21-39', '21–39', h => h != null && h > 20 && h < 40],
+  ['40', '40+', h => h != null && h >= 40],
+  ['none', 'Not listed / one-off', h => h == null],
+];
+const inBand = (j, b) => HBANDS.find(x => x[0] === b)[2](j.hours);
+const inGroup = j => active === 'All' || j.group === active;
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const slug = (j, i) => 'job-' + i;
 const render = md => {
@@ -97,17 +116,23 @@ const render = md => {
 function chips() {
   const el = document.getElementById('chips');
   el.innerHTML = ['All', ...groups].map(g => {
-    const n = g === 'All' ? JOBS.length : JOBS.filter(j => j.group === g).length;
-    return `<button class="chip" type="button" aria-pressed="${g === active}" data-g="${esc(g)}">${esc(g)} · ${n}</button>`;
+    const n = JOBS.filter(j => (g === 'All' || j.group === g) && inBand(j, hband)).length;
+    return `<button class="chip" type="button" aria-pressed="${g === active}" data-g="${esc(g)}"${n ? '' : ' disabled'}>${esc(g)} · ${n}</button>`;
   }).join('');
   el.querySelectorAll('button').forEach(b => b.onclick = () => { active = b.dataset.g; chips(); draw(); });
+  const hl = document.getElementById('hchips');
+  hl.innerHTML = HBANDS.map(([k, label]) => {
+    const n = JOBS.filter(j => inGroup(j) && inBand(j, k)).length;
+    return `<button class="chip" type="button" aria-pressed="${k === hband}" data-h="${k}"${n || k === hband ? '' : ' disabled'}>${esc(label)} · ${n}</button>`;
+  }).join('');
+  hl.querySelectorAll('button').forEach(b => b.onclick = () => { hband = b.dataset.h; chips(); draw(); });
 }
 function draw() {
   const q = query.toLowerCase();
   const shown = JOBS.map((j, i) => ({ j, i })).filter(({ j }) =>
-    (active === 'All' || j.group === active) && (!q || (j.title + ' ' + j.text).toLowerCase().includes(q)));
+    inGroup(j) && inBand(j, hband) && (!q || (j.title + ' ' + j.text).toLowerCase().includes(q)));
   const list = document.getElementById('list'), nav = document.getElementById('nav');
-  if (!shown.length) { list.innerHTML = '<p class="empty">No postings match. Clear the search or pick another group.</p>'; nav.innerHTML = ''; return; }
+  if (!shown.length) { list.innerHTML = '<p class="empty">No postings match these filters. Pick a wider hours range, another area, or clear the search.</p>'; nav.innerHTML = ''; return; }
   let html = '', navh = '', last = null;
   for (const { j, i } of shown) {
     if (j.group !== last) { html += `<h2 class="grouphead">${esc(j.group)}</h2>`; navh += `<h3>${esc(j.group)}</h3>`; last = j.group; }
