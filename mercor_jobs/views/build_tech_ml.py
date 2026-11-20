@@ -29,7 +29,10 @@ def pay(j):
 out = []
 for g, titles in GROUPS:
     for t in titles:
-        j = C[t]
+        j = C.get(t)
+        if j is None:  # listing closed since the hand-picked list was written
+            print('skipped (no longer listed):', t)
+            continue
         out.append({'group': g, 'title': t, 'url': j['url'], 'pay': pay(j), 'rateMax': j['rateMax'] or 0,
                     'location': j['location'] or '', 'commitment': j['commitment'] or '',
                     'hours': j['hoursPerWeek'], 'slots': j['remainingSlots'], 'posted': (j['postedAt'] or '')[:10],
